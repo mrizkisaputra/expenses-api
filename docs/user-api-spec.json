@@ -1,0 +1,294 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "User API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/v1"
+    }
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "description": "Registrasi untuk pengguna baru",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["name", "email", "password"],
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "email": {
+                    "type": "string",
+                    "maxLength": 100,
+                    "uniqueItems": true
+                  },
+                  "password": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                }
+              },
+              "example": {
+                "name": "mrizkisaputra",
+                "email": "mrizkisaputra6@gmail.com",
+                "password": "rahasia123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "register successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "status": 201,
+                  "timestamp": "18-10-2024 17:15:00",
+                  "message": "register successfully",
+                  "data": {
+                    "id": "uuid",
+                    "name": "mrizkisaputra",
+                    "email": "mrizkisaputra6@gmail.com",
+                    "password": "$2a$12$Fwl5NlQyoGTtqEgVm0R37esBqxBHqXLMfshzMGu869tyT3ksx4UMK"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "validation errors",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array"
+                    }
+                  }
+                },
+                "example": {
+                  "status": 400,
+                  "timestamp": "18-10-2024 17:15:00",
+                  "message": "validation error",
+                  "errors": [
+                    {
+                      "field": "Name",
+                      "rejected_value": "",
+                      "message": "REQUIRED, TO_LONG"
+                    },
+                    {
+                      "field": "Email",
+                      "rejected_value": "",
+                      "message": "REQUIRED, TO_LONG, MUST_UNIQUE"
+                    },
+                    {
+                      "field": "Password",
+                      "rejected_value": "",
+                      "message": "REQUIRED, TO_LONG"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": 500,
+                  "timestamp": "18-10-2024 17:15:00",
+                  "message": "internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/login": {
+      "description": "Login untuk pengguna",
+      "post": {
+        "description": "Login untuk pengguna,",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["email", "password"],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "maxLength": 100
+                  },
+                  "password": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                }
+              },
+              "example": {
+                "email": "mrizkisaputra6@gmail.com",
+                "password": "rahasia123"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "success login",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "jwt_token": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "status": 200,
+                  "timestamp": "18-10-2024 17:15:00",
+                  "message": "login success",
+                  "jwt_token": {
+                    "access_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array"
+                    }
+                  }
+                },
+                "example": {
+                  "status": 400,
+                  "timestamp": "18-10-2024 17:15:00",
+                  "message": "validation error",
+                  "errors": [
+                    {
+                      "field": "Email",
+                      "rejected_value": "",
+                      "message": "REQUIRED, TO_LONG, MUST_UNIQUE"
+                    },
+                    {
+                      "field": "Password",
+                      "rejected_value": "",
+                      "message": "REQUIRED, TO_LONG"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "status": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "example": {
+                  "status": 500,
+                  "timestamp": "18-10-2024 17:15:00",
+                  "message": "internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

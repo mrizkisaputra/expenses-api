@@ -1,0 +1,244 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Expenses API",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8080/api/v1"
+    }
+  ],
+  "paths": {
+    "/expenses": {
+      "post": {
+        "description": "Menambahkan pengeluaran baru",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Content-Type",
+            "description": "content-type must be application/json",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "application/json"
+          }
+        ],
+        "requestBody": {
+          "description": "",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["category", "amount"],
+                "properties": {
+                  "description": {
+                    "type": "string",
+                    "maxLength": 500
+                  },
+                  "amount": {
+                    "type": "number",
+                    "format": "decimal"
+                  },
+                  "category": {
+                    "type": "string",
+                    "maxLength": 100
+                  }
+                }
+              },
+              "example": {
+                "description": "happy with friends",
+                "amount": 450000.00,
+                "category": "Dinner"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "success added expense",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "data": {
+                      "type": "object"
+                    }
+                  }
+                },
+                "example": {
+                  "status": 201,
+                  "message": "added successfully",
+                  "data": {
+                    "id": "qLJEC5OcAK3UpEsI1QzJnyAe2sRsv5",
+                    "id_user": "UoEmrdpKkpmDYjuQwQSXpe3jg6U1jF",
+                    "description": "happy with friends",
+                    "amount": 450000.00,
+                    "category": "Dinner",
+                    "created_at": 1729251588494,
+                    "updated_at": 1729251998569
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "status": {
+                      "type": "integer"
+                    },
+                    "message": {
+                      "type": "string"
+                    },
+                    "errors": {
+                      "type": "array"
+                    }
+                  }
+                },
+                "example": {
+                  "status": 400,
+                  "message": "validation error",
+                  "errors": [
+                    {
+                      "field": "Amount",
+                      "rejected_value": "",
+                      "message": "REQUIRED"
+                    },
+                    {
+                      "field": "Category",
+                      "rejected_value": "",
+                      "message": "REQUIRED, TO_LONG"
+                    },
+                    {
+                      "field": "Description",
+                      "rejected_value": "",
+                      "message": "TO_LONG"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": 401,
+                  "message": "access denied"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "internal server error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": 500,
+                  "message": "internal server error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/expenses/id": {
+      "delete": {
+        "description": "Menghapus pengeluaran yang ada",
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "example": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c"
+            }
+          },
+          {
+            "in": "header",
+            "name": "Content-Type",
+            "description": "content-type must be application/json",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "application/json"
+          },
+          {
+            "in": "path",
+            "name": "id",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "qLJEC5OcAK3UpEsI1QzJnyAe2sRsv5"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "deleted successfully"
+          },
+          "400": {
+            "description": "validation error",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": 400,
+                  "message": "validation error",
+                  "error": "Bad API Request: Invalid id parameter value"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": 401,
+                  "message": "access denied"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "example": {
+                  "status": 500,
+                  "message": "internal server eror"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
