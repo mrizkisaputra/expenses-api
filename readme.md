@@ -39,3 +39,24 @@ Berikut adalah fitur-fitur yang ada di **_Expense Tracker API_**:
 
 ## API Documentation
 Api spec is in directory [docs](./docs)
+
+## Setup Migration
+Memulai migration database postgresql with [Golang Migrate](https://github.com/golang-migrate/migrate/blob/master/database/postgres/TUTORIAL.md)
+### Create migrations
+```shell
+migrate create -ext=sql -dir=db/migrations create_name_table 
+```
+### Run migrations
+```shell
+# postgres://postgres:password@localhost:5432/example?sslmode=disable
+migrate -database=POSTGRESQL_URL -path=db/migrations up
+```
+
+## Setup Docker Compose
+```shell
+# membuat dan menjalankan container
+docker compose up -d
+```
+```shell
+docker compose down
+```
