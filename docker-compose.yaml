@@ -1,0 +1,38 @@
+version: "3.8"
+
+services:
+
+  db:
+    container_name: postgres_container
+    image: postgres
+    ports:
+      - "5444:5432"
+    restart: always
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASS}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres-db-volume-expense-api:/var/lib/postgresql/data
+    networks:
+      - postgres-db-network
+
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    ports:
+      - "80:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@gmail.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    networks:
+      - postgres-db-network
+
+
+#global volume
+volumes:
+  postgres-db-volume-expense-api:
+
+#global network
+networks:
+  postgres-db-network:
