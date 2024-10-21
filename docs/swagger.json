@@ -1,0 +1,781 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Expense API",
+    "description": "API Restfull",
+    "version": "1.0.0",
+    "contact": {
+      "name": "Muhammat Rizki Saputra",
+      "email": "mrizkisaputra6@gmail.com",
+      "url": "https://github.com/mrizkisaputra/expenses-api"
+    }
+  },
+  "basePath": "/api/v1",
+  "paths": {
+    "/auth/register": {
+      "post": {
+        "summary": "Register new user",
+        "description": "register new user, return user",
+        "tags": [
+          "User API"
+        ],
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "required": true,
+            "name": "",
+            "schema": {
+              "type": "object",
+              "required": [
+                "email",
+                "password",
+                "first_name",
+                "last_name"
+              ],
+              "properties": {
+                "first_name": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "last_name": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "email": {
+                  "type": "string",
+                  "maxLength": 100,
+                  "uniqueItems": true
+                },
+                "password": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/models.User"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestError"
+            }
+          },
+          "409": {
+            "description": "Conflict",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestErr"
+            }
+          },
+          "500": {
+            "description": "Server error",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestErr"
+            }
+          }
+        }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "summary": "Login new user",
+        "description": "login user, returns user and token",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "User API"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "required": true,
+            "name": "",
+            "schema": {
+              "type": "object",
+              "required": [
+                "email",
+                "password"
+              ],
+              "properties": {
+                "email": {
+                  "type": "string",
+                  "maxLength": 100
+                },
+                "password": {
+                  "type": "string",
+                  "maxLength": 100
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "integer"
+                },
+                "message": {
+                  "type": "string"
+                },
+                "jwt": {
+                  "properties": {
+                    "access_token": {
+                      "type": "string"
+                    },
+                    "refresh_token": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestError"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestErr"
+            }
+          }
+        }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "summary": "Get current user",
+        "description": "get current user",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "User API"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "description": "Bearer access_token"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/models.User"
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update user",
+        "description": "update user existing",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "User API"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "",
+            "required": true,
+            "description": "request body for update user",
+            "schema": {
+              "$ref": "#/definitions/body.User"
+            }
+          },
+          {
+            "type": "string",
+            "in": "header",
+            "required": true,
+            "name": "Authorization",
+            "description": ""
+          }
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "schema": {
+              "$ref": "#/definitions/body.User"
+            }
+          }
+        }
+      }
+    },
+    "/expenses": {
+      "post": {
+        "summary": "Create expense",
+        "description": "create new expense, return expense",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Expense API"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "description": "Bearer jwt_token"
+          },
+          {
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/body.Expense"
+            },
+            "name": ""
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "$ref": "#/definitions/models.Expense"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestError"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestErr"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestErr"
+            }
+          }
+        }
+      },
+      "get": {
+        "summary": "Search expense",
+        "description": "Get all expenses",
+        "consumes": ["application/json"],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Expense API"
+        ],
+        "parameters": [
+          {
+            "in": "header",
+            "name": "Authorization",
+            "type": "string",
+            "required": true,
+            "description": "Bearer jwt_token"
+          },
+          {
+            "in": "query",
+            "name": "page",
+            "type": "number",
+            "required": false,
+            "description": "",
+            "default": 1
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "type": "number",
+            "required": false,
+            "description": "",
+            "default": 10
+          },
+          {
+            "in": "query",
+            "name": "filter",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "enum": ["last_week", "last_month", "last_3_month", "custom"],
+              "description": "Filter expenses based on a time period"
+            },
+            "default": "last_15_days"
+          },
+          {
+            "in": "query",
+            "name": "start_date",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "description": "Start date for custom filter (YYYY-MM-DD)"
+            }
+          },
+          {
+            "in": "query",
+            "name": "end_date",
+            "type": "string",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "format": "date",
+              "description": "end date for custom filter (YYYY-MM-DD)"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/models.ExpenseWithPaging"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestErr"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestErr"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestErr"
+            }
+          }
+        }
+      }
+    },
+    "/expenses/{id}": {
+      "get": {
+        "summary": "Get expense",
+        "description": "get expense by id",
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Expense API"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "description": "Bearer jwt_token"
+          },
+          {
+            "in": "path",
+            "type": "string",
+            "description": "id expense",
+            "required": true,
+            "name": "id"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/models.Expense"
+            }
+          },
+          "400": {},
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestErr"
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete expense",
+        "description": "delete expense by id",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "description": "Bearer jwt_token"
+          },
+          {
+            "in": "path",
+            "type": "string",
+            "description": "id expense",
+            "required": true,
+            "name": "id"
+          }
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "tags": [
+          "Expense API"
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestErr"
+            }
+          }
+        }
+      },
+      "patch": {
+        "summary": "Update expense",
+        "description": "update expense by id",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "description": "Bearer jwt_token"
+          },
+          {
+            "in": "path",
+            "type": "string",
+            "description": "id expense",
+            "required": true,
+            "name": "id"
+          },
+          {
+            "in": "body",
+            "required": true,
+            "description": "",
+            "schema": {
+              "$ref": "#/definitions/body.Expense"
+            },
+            "name": ""
+          }
+        ],
+        "tags": [
+          "Expense API"
+        ],
+        "responses": {
+          "202": {
+            "description": "Accepted",
+            "schema": {
+              "$ref": "#/definitions/models.Expense"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestError"
+            }
+          },
+          "500": {
+            "description": "Server Error",
+            "schema": {
+              "$ref": "#/definitions/httpErrors.RestErr"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "httpErrors.RestError": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        },
+        "errors": {
+          "type": "array",
+          "format": "arrays of object",
+          "items": {
+            "$ref": "#/definitions/httpErrors.ErrBadRequestAuthItems"
+          }
+        }
+      }
+    },
+    "httpErrors.ErrBadRequestAuthItems": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "rejected_value": {
+          "type": "string"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "httpErrors.RestErr": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        }
+      }
+    },
+    "body.User": {
+      "type": "object",
+      "required": [
+        "email",
+        "password",
+        "first_name",
+        "last_name"
+      ],
+      "properties": {
+        "first_name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "last_name": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 100,
+          "uniqueItems": true
+        },
+        "password": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "avatar": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "city": {
+          "type": "string",
+          "maxLength": 100
+        },
+        "phone_number": {
+          "type": "string",
+          "maxLength": 13,
+          "uniqueItems": true
+        },
+        "updated_at": {
+          "type": "integer"
+        }
+      }
+    },
+    "models.User": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "first_name": {
+              "type": "string"
+            },
+            "last_name": {
+              "type": "string"
+            },
+            "email": {
+              "type": "string"
+            },
+            "password": {
+              "type": "string"
+            },
+            "avatar": {
+              "type": "string"
+            },
+            "city": {
+              "type": "string"
+            },
+            "phone_number": {
+              "type": "string"
+            },
+            "created_at": {
+              "type": "integer"
+            },
+            "updated_at": {
+              "type": "integer"
+            }
+          }
+        }
+      }
+    },
+    "body.Expense": {
+      "required": [
+        "amount",
+        "description",
+        "category"
+      ],
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "maxLength": 200
+        },
+        "amount": {
+          "type": "number",
+          "format": "decimal(10, 2)"
+        },
+        "category": {
+          "type": "string",
+          "maxLength": 100
+        }
+      }
+    },
+    "models.Expense": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "id_user": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "number"
+            },
+            "category": {
+              "type": "string"
+            },
+            "created_at": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "updated_at": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        }
+      }
+    },
+    "models.ExpenseWithPaging": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "integer"
+        },
+        "message": {
+          "type": "string"
+        },
+        "data": {
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "id_user": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "amount": {
+              "type": "number"
+            },
+            "category": {
+              "type": "string"
+            },
+            "created_at": {
+              "type": "integer",
+              "format": "int64"
+            },
+            "updated_at": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        },
+        "page": {
+          "type": "number"
+        },
+        "limit": {
+          "type": "number"
+        },
+        "total_items": {
+          "type": "number"
+        },
+        "total_pages": {
+          "type": "number"
+        }
+      }
+    }
+  }
+}
