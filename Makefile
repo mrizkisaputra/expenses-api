@@ -25,7 +25,7 @@ develop:
 # Go migrate postgresql
 
 migrate_up:
-	migrate -database=postgres://postgres:password@localhost:5444/db_20102024?sslmode=disable -path=migrations up
+	migrate -database=postgres://postgres:postgres@localhost:5444/db_20102024?sslmode=disable -path=migrations up
 
 migrate_down:
 	migrate -database=postgres://postgres:postgres@localhost:5444/db_20102024?sslmode=disable -path=migrations down
