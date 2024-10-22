@@ -1,0 +1,17 @@
+server:
+  Host: localhost
+  Port: 8080
+  ReadTimeout: 5
+  WriteTimeout: 5
+  Mode: Development
+
+postgres:
+  User: postgres
+  Password: postgres
+  Host: localhost
+  Port: 5444
+  Dbname: db_20102024
+
+logger:
+  Level: 6
+  Development: true
