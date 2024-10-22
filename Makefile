@@ -43,3 +43,10 @@ down-local:
 # image lama, volume, dan network yang tidak terpakai
 clean:
 	docker system prune -f
+
+# ==============================================================================
+# Modules support
+
+tidy:
+	go mod tidy
+	#go mod vendor
