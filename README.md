@@ -25,10 +25,11 @@ Berikut adalah fitur-fitur yang ada di **_Expense Tracker API_**:
 Daftar framework & library apa saja yang digunakan:
 - [golang](https://go.dev/) - Programming language
 - [postgreSQL](https://www.postgresql.org/docs/) - Relational database
-- [redis](https://redis.io/docs/latest/develop/) - Caching database
+- [redis](https://github.com/redis/go-redis) - Caching database
 - [docker](https://www.docker.com/) - Docker
 - [gin](https://gin-gonic.com/) - Web Framework
 - [GORM](https://gorm.io/docs/index.html) -  Sql mapping object
+- [uuid](https://github.com/google/uuid) - UUID
 - [viper](https://github.com/spf13/viper) - configuration file
 - [logrus](https://github.com/sirupsen/logrus) - Logger
 - [migrate](https://github.com/golang-migrate/migrate) - Golang database migration
