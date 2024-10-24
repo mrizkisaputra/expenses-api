@@ -3,6 +3,7 @@ package config
 import (
 	"fmt"
 	"github.com/spf13/viper"
+	"time"
 )
 
 // App config
@@ -16,9 +17,10 @@ type Config struct {
 type ServerConfig struct {
 	Host         string
 	Port         int
-	ReadTimeout  int
-	WriteTimeout int
+	ReadTimeout  time.Duration
+	WriteTimeout time.Duration
 	Mode         string
+	SSL          bool
 }
 
 // Postgresql config
@@ -33,6 +35,8 @@ type PostgresConfig struct {
 // Logger config
 type LoggerConfig struct {
 	Level       string
+	Caller      bool
+	Encoding    string
 	Development bool
 }
 

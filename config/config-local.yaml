@@ -4,6 +4,7 @@ server:
   ReadTimeout: 5
   WriteTimeout: 5
   Mode: Development
+  SSL: true
 
 postgres:
   User: postgres
@@ -13,5 +14,7 @@ postgres:
   Dbname: db_20102024
 
 logger:
-  Level: 6
+  Level: trace
+  Caller: true
+  Encoding: json
   Development: true
