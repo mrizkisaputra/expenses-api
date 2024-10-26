@@ -5,6 +5,7 @@ import (
 	"github.com/mrizkisaputra/expenses-api/config"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 	"time"
 )
 
@@ -24,7 +25,9 @@ func NewPostgresConn(cfg *config.Config) (*gorm.DB, error) {
 		cfg.Postgres.Dbname,
 		cfg.Postgres.Port,
 	)
-	db, err := gorm.Open(postgres.Open(dataSourceName), &gorm.Config{})
+	db, err := gorm.Open(postgres.Open(dataSourceName), &gorm.Config{
+		Logger: logger.Default.LogMode(getLoggerLevel(cfg)),
+	})
 	if err != nil {
 		return nil, fmt.Errorf("error connecting to database: %v", err)
 	}
@@ -39,4 +42,19 @@ func NewPostgresConn(cfg *config.Config) (*gorm.DB, error) {
 	sqlDb.SetMaxIdleConns(maxIdleConns)
 
 	return db, nil
+}
+
+var fieldsLogrusLevelMap = map[string]logger.LogLevel{
+	"info":   logger.Info,
+	"warn":   logger.Warn,
+	"error":  logger.Error,
+	"silent": logger.Silent,
+}
+
+func getLoggerLevel(cfg *config.Config) logger.LogLevel {
+	level, exist := fieldsLogrusLevelMap[cfg.Logger.Level]
+	if !exist {
+		level = logger.Info
+	}
+	return level
 }
