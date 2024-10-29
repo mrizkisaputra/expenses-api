@@ -10,7 +10,7 @@ type User struct {
 	Email       string      `gorm:"column:email"`
 	Password    string      `gorm:"column:password"`
 	Avatar      *string     `gorm:"column:avatar"`
-	Information information `gorm:"embedded"`
+	Information Information `gorm:"embedded"`
 	CreatedAt   int64       `gorm:"column:created_at;autoCreateTime:milli;<-:create"` // allow read and create
 	UpdatedAt   int64       `gorm:"column:updated_at;autoCreateTime:milli;autoCreateTime:milli"`
 }
