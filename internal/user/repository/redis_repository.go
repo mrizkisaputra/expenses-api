@@ -10,16 +10,18 @@ import (
 	"time"
 )
 
+// userRedisRepository is data/repository implementation
+// of service layer UserRedisRepository.
 type userRedisRepository struct {
 	redisClient *redis.Client
 }
 
-// User Redis Constructor
+// NewUserRedisRepository is a factory for initializing User Redis Repository.
 func NewUserRedisRepository(redisClient *redis.Client) UserRedisRepository {
 	return &userRedisRepository{redisClient: redisClient}
 }
 
-// Cache user
+// Set cache user
 func (u *userRedisRepository) Set(ctx context.Context, key string, expiration time.Duration, value *model.User) error {
 	userBytes, err := json.Marshal(value)
 	if err != nil {
@@ -41,7 +43,7 @@ func (u *userRedisRepository) Get(ctx context.Context, key string) (*model.User,
 
 	user := new(model.User)
 	if err := json.Unmarshal(userBytes, user); err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "UserRedisRepository.Get.Unmarshall")
 	}
 	return user, nil
 }

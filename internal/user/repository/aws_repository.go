@@ -10,16 +10,18 @@ import (
 	"time"
 )
 
+// awsUserRepository is data/repository implementation
+// of service layer AWSUserRepository
 type awsUserRepository struct {
 	s3Client *minio.Client
 }
 
-// AWS User Repository constructor
+// NewAWSUserRepository is a factory for initializing awsUserRepository
 func NewAWSUserRepository(s3Client *minio.Client) user.AWSUserRepository {
 	return &awsUserRepository{s3Client: s3Client}
 }
 
-// Upload file to MinIO S3
+// PutObject upload file to MinIO S3
 func (aws *awsUserRepository) PutObject(ctx context.Context, input *model.UserUploadInput) (*minio.UploadInfo, error) {
 	opts := minio.PutObjectOptions{
 		UserMetadata: map[string]string{"x-amz-acl": "public-read"},
@@ -34,8 +36,9 @@ func (aws *awsUserRepository) PutObject(ctx context.Context, input *model.UserUp
 	return &uploadInfo, nil
 }
 
-// Download file from MinIO S3
+// GetObject download file from MinIO S3
 func (aws *awsUserRepository) GetObject(ctx context.Context, bucketName, objectName string) (*minio.Object, error) {
+	// s3 object operation
 	object, err := aws.s3Client.GetObject(ctx, bucketName, objectName, minio.GetObjectOptions{})
 	defer object.Close()
 	if err != nil {
@@ -44,22 +47,25 @@ func (aws *awsUserRepository) GetObject(ctx context.Context, bucketName, objectN
 	return object, nil
 }
 
-// Delete file from MinIO S3
+// RemoveObject delete file from MinIO S3
 func (aws *awsUserRepository) RemoveObject(ctx context.Context, bucketName, objectName string) error {
 	opts := minio.RemoveObjectOptions{
 		GovernanceBypass: true,
 	}
+
+	// s3 object operation
 	if err := aws.s3Client.RemoveObject(ctx, bucketName, objectName, opts); err != nil {
 		return errors.Wrap(err, "AWSUserRepository.RemoveObject.s3Client.RemoveObject")
 	}
 	return nil
 }
 
-// Get temporary access url
+// PresignedGetObject get temporary access url
 func (aws *awsUserRepository) PresignedGetObject(ctx context.Context, bucketName, objectName string, expiry time.Duration) (*url.URL, error) {
-	//Set request parameters for content-disposition.
+	// set request parameters for content-disposition.
 	var reqParam = make(url.Values)
 
+	// s3 object operation
 	presignedUrl, err := aws.s3Client.PresignedGetObject(ctx, bucketName, objectName, expiry, reqParam)
 	if err != nil {
 		return nil, errors.Wrap(err, "AWSUserRepository.PresignedGetObject.s3Client.PresignedGetObject")

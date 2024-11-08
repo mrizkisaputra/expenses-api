@@ -11,6 +11,7 @@ type Config struct {
 	Server   ServerConfig
 	Postgres PostgresConfig
 	Logger   LoggerConfig
+	AWS      AwsConfig
 }
 
 // Server config
@@ -21,6 +22,7 @@ type ServerConfig struct {
 	WriteTimeout time.Duration
 	Mode         string
 	SSL          bool
+	JWTSecretKey string
 }
 
 // Postgresql config
@@ -38,6 +40,10 @@ type LoggerConfig struct {
 	Caller      bool
 	Encoding    string
 	Development bool
+}
+
+type AwsConfig struct {
+	Endpoint string
 }
 
 func NewAppConfig(configPath string) (*Config, error) {

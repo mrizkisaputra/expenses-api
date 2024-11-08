@@ -8,16 +8,18 @@ import (
 	"gorm.io/gorm"
 )
 
+// userPostgresRepository is data/repository implementation
+// of service layer UserPostgresRepository
 type userPostgresRepository struct {
 	db *gorm.DB
 }
 
-// User postgres constructor
+// NewUserPostgresRepository is a factory for initializing User Repositories
 func NewUserPostgresRepository(db *gorm.DB) UserPostgresRepository {
 	return &userPostgresRepository{db: db}
 }
 
-func (u *userPostgresRepository) Register(ctx context.Context, entity *model.User) (*model.User, error) {
+func (u *userPostgresRepository) Create(ctx context.Context, entity *model.User) (*model.User, error) {
 	db := u.db.WithContext(ctx)
 	/**
 	INSERT INTO "users" ("email","password","first_name","last_name","created_at","updated_at")
@@ -44,7 +46,7 @@ func (u *userPostgresRepository) Update(ctx context.Context, entity *model.User)
 func (u *userPostgresRepository) FindByEmail(ctx context.Context, entity *model.User) (*model.User, error) {
 	DB := u.db.WithContext(ctx)
 
-	// SELECT count(*) FROM "users" WHERE "users"."email" = ?
+	// SELECT * FROM "users" WHERE "users"."email" = ? LIMIT 1
 	if err := DB.Where(model.User{Email: entity.Email}).Take(entity).Error; err != nil {
 		return nil, errors.Wrap(err, "UserPostgresRepository.FindByEmail.Take")
 	}
@@ -56,7 +58,7 @@ func (u *userPostgresRepository) FindById(ctx context.Context, entity *model.Use
 
 	// SELECT * FROM "users" WHERE "users"."id" = ? LIMIT 1
 	if err := DB.Take(entity).Error; err != nil {
-		return nil, errors.Wrap(err, "")
+		return nil, errors.Wrap(err, "UserPostgresRepository.FindById.Take")
 	}
 	return entity, nil
 }

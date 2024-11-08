@@ -60,7 +60,7 @@ func TestMain(m *testing.M) {
 }
 
 // Unit Test User Register
-func TestUserPostgresRepository_Register(t *testing.T) {
+func TestUserPostgresRepository_Create(t *testing.T) {
 	// prepare model data for user register
 	usr := &model.User{
 		Information: model.Information{
@@ -78,7 +78,7 @@ func TestUserPostgresRepository_Register(t *testing.T) {
 		WillReturnRows(sqlmock.NewRows([]string{"id"}).AddRow(uuid.New()))
 	mock.ExpectCommit()
 
-	createdUser, err := repository.Register(context.Background(), usr)
+	createdUser, err := repository.Create(context.Background(), usr)
 	require.Nil(t, err)
 	require.NotNil(t, createdUser)
 	//fmt.Printf("%+v", createdUser)

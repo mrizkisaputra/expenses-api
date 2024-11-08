@@ -10,8 +10,11 @@ build:
 test:
 	go test
 
-user-unit-test:
+user-repository-test:
 	go test -v ./internal/user/repository
+
+user-service-test:
+	go test -v ./internal/user/service
 
 # ==============================================================================
 # Docker compose commands

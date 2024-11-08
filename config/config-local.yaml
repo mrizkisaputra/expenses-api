@@ -5,6 +5,7 @@ server:
   WriteTimeout: 5
   Mode: Development
   SSL: true
+  JWTSecretKey: ApWynlzzJXSlWGmnu50jBYzSjaawrcXn
 
 postgres:
   User: postgres
@@ -18,3 +19,6 @@ logger:
   Caller: true
   Encoding: json
   Development: true
+
+aws:
+  Endpoint: http://localhost:9000
