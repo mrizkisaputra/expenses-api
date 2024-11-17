@@ -92,19 +92,16 @@ func TestUserPostgresRepository_Create(t *testing.T) {
 // Unit Test Updating existing user
 func TestUserPostgresRepository_Update(t *testing.T) {
 	// prepare model data update user
-	city := "New York"
-	phoneNumber := "123456"
-	avatar := "https://example.com/images"
 	usr := &model.User{
 		Information: model.Information{
 			FirstName:   "Jhon",
 			LastName:    "Smith",
-			City:        &city,
-			PhoneNumber: &phoneNumber,
+			City:        "New York",
+			PhoneNumber: "123456",
 		},
 		Email:    "jhon@smith.com",
 		Password: "secret",
-		Avatar:   &avatar,
+		Avatar:   "https://example.com/images",
 	}
 
 	// define expected sql query
@@ -135,8 +132,6 @@ func TestUserPostgresRepository_Update(t *testing.T) {
 
 // Unit Test Find user by id
 func TestUserPostgresRepository_FindById(t *testing.T) {
-	city := "New York"
-	phoneNumber := "123456"
 	testUser := &model.User{
 		Id:       uuid.New(),
 		Email:    "Alex@gmail.com",
@@ -144,8 +139,8 @@ func TestUserPostgresRepository_FindById(t *testing.T) {
 		Information: model.Information{
 			FirstName:   "alex",
 			LastName:    "smith",
-			City:        &city,
-			PhoneNumber: &phoneNumber,
+			City:        "New York",
+			PhoneNumber: "123456",
 		},
 		CreatedAt: time.Now().UnixMilli(),
 		UpdatedAt: time.Now().UnixMilli(),
@@ -153,7 +148,7 @@ func TestUserPostgresRepository_FindById(t *testing.T) {
 
 	// define expected sql query
 	rows := sqlmock.NewRows([]string{"id", "email", "password", "avatar", "first_name", "last_name", "city", "phone_number", "created_at", "updated_at"}).
-		AddRow(testUser.Id, testUser.Email, testUser.Password, testUser.Avatar, "alex", "smith", &city, &phoneNumber, testUser.CreatedAt, testUser.UpdatedAt)
+		AddRow(testUser.Id, testUser.Email, testUser.Password, testUser.Avatar, "alex", "smith", "New York", "123456", testUser.CreatedAt, testUser.UpdatedAt)
 	mock.ExpectQuery(expectedFindUserByIdQuery).WithArgs(testUser.Id, 1).WillReturnRows(rows)
 
 	findUser, err := repository.FindById(context.Background(), testUser)

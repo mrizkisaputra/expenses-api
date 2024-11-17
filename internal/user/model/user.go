@@ -13,10 +13,10 @@ type User struct {
 	Id          uuid.UUID   `gorm:"column:id;primary_key;default:uuid_generate_v4();<-:create"` // allow read and create
 	Email       string      `gorm:"column:email"`
 	Password    string      `gorm:"column:password"`
-	Avatar      *string     `gorm:"column:avatar"`
+	Avatar      string      `gorm:"column:avatar"`
 	Information Information `gorm:"embedded"`
 	CreatedAt   int64       `gorm:"column:created_at;autoCreateTime:milli;<-:create"` // allow read and create
-	UpdatedAt   int64       `gorm:"column:updated_at;autoCreateTime:milli;autoCreateTime:milli"`
+	UpdatedAt   int64       `gorm:"column:updated_at;autoCreateTime:milli;autoUpdateTime:milli"`
 }
 
 func (u *User) TableName() string {
@@ -74,12 +74,12 @@ func (u *User) PrepareUpdate(oldData *User) error {
 	//	}
 	//}
 
-	if u.Information.City != nil {
-		*oldData.Information.City = strings.TrimSpace(*u.Information.City)
+	if u.Information.City != "" {
+		oldData.Information.City = strings.TrimSpace(u.Information.City)
 	}
 
-	if u.Information.PhoneNumber != nil {
-		*oldData.Information.PhoneNumber = strings.TrimSpace(*u.Information.PhoneNumber)
+	if u.Information.PhoneNumber != "" {
+		oldData.Information.PhoneNumber = strings.TrimSpace(u.Information.PhoneNumber)
 	}
 
 	return nil

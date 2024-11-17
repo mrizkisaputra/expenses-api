@@ -165,6 +165,43 @@
         }
       }
     },
+    "/user/logout": {
+      "delete": {
+        "summary": "Logout User",
+        "description": "logout user",
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "description": "Bearer access_token"
+          }
+        ],
+        "tags": ["User API"],
+        "produces": ["application/json"],
+        "responses": {
+          "204": {
+            "description": ""
+          }
+        }
+      }
+    },
+    "/refresh": {
+      "post": {
+        "summary": "Refresh Token",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+
+          }
+        ],
+        "responses": {
+          "200": {}
+        }
+      }
+    },
     "/user/me": {
       "get": {
         "summary": "Get current user",
@@ -273,6 +310,33 @@
                 "avatar": {
                   "type": "string",
                   "format": "url"
+                }
+              }
+            }
+          }
+        }
+      },
+      "delete": {
+        "summary": "Delete Avatar",
+        "description": "delete avatar user image",
+        "tags": ["User API"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "description": "Bearer access_token"
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "No Content",
+            "schema": {
+              "properties": {
+                "status": {
+                  "type": "string"
                 }
               }
             }

@@ -75,7 +75,6 @@ func (u *userService) GetCurrentUser(ctx context.Context, id string) (*dto.UserR
 // Update update current user
 func (u *userService) Update(ctx context.Context, user *model.User) (*dto.UserResponse, error) {
 	userFound, err := u.pgRepo.FindById(ctx, &model.User{Id: user.Id})
-	u.logger.Debug(userFound)
 	if err != nil {
 		return nil, httpErrors.NewNotFoundError(errors.Wrap(err, "UserService.Update.FindById"))
 	}
@@ -107,13 +106,12 @@ func (u *userService) UploadAvatar(ctx context.Context, id uuid.UUID, file *mode
 
 	// generate url
 	avatarURL := u.generateAWSMinioURL(file.BucketName, uploadInfo.Key)
-
 	// update to database
-	updatedUser, err := u.pgRepo.Update(ctx, &model.User{Id: id, Avatar: &avatarURL})
-
+	updatedUser, err := u.pgRepo.Update(ctx, &model.User{Id: id, Avatar: avatarURL})
 	if err != nil {
 		return nil, httpErrors.NewInternalServerError(err)
 	}
+
 	return converter.ToUserResponse(updatedUser), nil
 }
 

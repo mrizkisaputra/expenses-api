@@ -53,12 +53,9 @@ func TestUserService_GetCurrentUser(t *testing.T) {
 			Email:    "testcase@test.com",
 			Password: "secret",
 			Information: model.Information{
-				FirstName:   "test",
-				LastName:    "test",
-				City:        nil,
-				PhoneNumber: nil,
+				FirstName: "test",
+				LastName:  "test",
 			},
-			Avatar:    nil,
 			UpdatedAt: time.Now().UnixMilli(),
 			CreatedAt: time.Now().UnixMilli(),
 		}
@@ -89,12 +86,9 @@ func TestUserService_GetCurrentUser(t *testing.T) {
 			Email:    "testcase@test.com",
 			Password: "secret",
 			Information: model.Information{
-				FirstName:   "test",
-				LastName:    "test",
-				City:        nil,
-				PhoneNumber: nil,
+				FirstName: "test",
+				LastName:  "test",
 			},
-			Avatar:    nil,
 			UpdatedAt: time.Now().UnixMilli(),
 			CreatedAt: time.Now().UnixMilli(),
 		}
@@ -152,17 +146,14 @@ func TestUserService_Update(t *testing.T) {
 		})
 
 		userID := uuid.New()
-		city := "south sumatera"
 
 		// Mock data pengguna lama
 		oldUser := &model.User{
 			Id:    userID,
 			Email: "oldemail@example.com",
 			Information: model.Information{
-				FirstName:   "OldFirstName",
-				LastName:    "OldLastName",
-				City:        &city,
-				PhoneNumber: nil,
+				FirstName: "OldFirstName",
+				LastName:  "OldLastName",
 			},
 		}
 
@@ -171,10 +162,8 @@ func TestUserService_Update(t *testing.T) {
 			Id:    userID,
 			Email: "newemail@example.com",
 			Information: model.Information{
-				FirstName:   "NewFirstName",
-				LastName:    "",  // Tidak diupdate karena kosong
-				City:        nil, // Tidak diupdate karena nil
-				PhoneNumber: nil, // Tidak diupdate karena nil
+				FirstName: "NewFirstName",
+				LastName:  "", // Tidak diupdate karena kosong
 			},
 		}
 

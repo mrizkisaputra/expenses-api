@@ -85,7 +85,7 @@ func (u *userController) Update() gin.HandlerFunc {
 
 		ctx.JSON(http.StatusAccepted, &dto.ApiUserResponse{
 			Status:  http.StatusAccepted,
-			Message: "Accept",
+			Message: "Accepted",
 			Data:    userResponse,
 		})
 	}
@@ -138,10 +138,18 @@ func (u *userController) PostAvatar() gin.HandlerFunc {
 			ContentType: image.Header.Get("Content-Type"),
 		})
 
+		if err != nil {
+			utils.LogErrorResponse(ctx, u.logger, err)
+			ctx.JSON(httpErrors.ErrorResponse(ctx, err))
+			return
+		}
+
 		ctx.JSON(http.StatusCreated, &dto.ApiUserResponse{
 			Status:  http.StatusCreated,
 			Message: "Created",
-			Data:    userResponse.Avatar,
+			Data: map[string]any{
+				"avatar": userResponse.Avatar,
+			},
 		})
 	}
 }

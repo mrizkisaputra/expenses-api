@@ -16,11 +16,11 @@ type UserLoginRequest struct {
 
 // UserUpdateRequest Model DTO update user
 type UserUpdateRequest struct {
-	FirstName   string  `json:"first_name" validate:"omitempty,max=100,alpha"`
-	LastName    string  `json:"last_name" validate:"omitempty,max=100,alpha"`
-	Email       string  `json:"email" validate:"omitempty,max=100,email"`
-	City        *string `json:"city" validate:"omitempty,max=100,alpha"`
-	PhoneNumber *string `json:"phone_number" validate:"omitempty,max=13,numeric"`
+	FirstName   string `json:"first_name" validate:"omitempty,max=100,alpha"`
+	LastName    string `json:"last_name" validate:"omitempty,max=100,alpha"`
+	Email       string `json:"email" validate:"omitempty,max=100,email"`
+	City        string `json:"city" validate:"omitempty,max=100,alpha"`
+	PhoneNumber string `json:"phone_number" validate:"omitempty,max=13,numeric"`
 }
 
 //type UserUploadAvatarRequest struct {

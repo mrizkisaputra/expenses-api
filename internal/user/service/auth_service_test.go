@@ -46,16 +46,13 @@ func TestAuthService_Register_Success(t *testing.T) {
 	var auth = NewAuthService(&ServiceConfig{UserPostgresRepository: mockRepo})
 
 	expectedResponse := &dto.UserResponse{
-		Id:          uuid.New(),
-		Email:       "mrizkisaputra@test.com",
-		Password:    "secret",
-		FirstName:   "muhammat",
-		LastName:    "saputra",
-		Avatar:      nil,
-		City:        nil,
-		PhoneNumber: nil,
-		UpdatedAt:   time.Now().UnixMilli(),
-		CreatedAt:   time.Now().UnixMilli(),
+		Id:        uuid.New(),
+		Email:     "mrizkisaputra@test.com",
+		Password:  "secret",
+		FirstName: "muhammat",
+		LastName:  "saputra",
+		UpdatedAt: time.Now().UnixMilli(),
+		CreatedAt: time.Now().UnixMilli(),
 	}
 
 	// initializing mock data
@@ -76,12 +73,9 @@ func TestAuthService_Register_Success(t *testing.T) {
 			Email:    "mrizkisaputra@test.com",
 			Password: "secret",
 			Information: model.Information{
-				FirstName:   "muhammat",
-				LastName:    "saputra",
-				City:        nil,
-				PhoneNumber: nil,
+				FirstName: "muhammat",
+				LastName:  "saputra",
 			},
-			Avatar:    nil,
 			UpdatedAt: expectedResponse.UpdatedAt,
 			CreatedAt: expectedResponse.CreatedAt,
 		}, nil)

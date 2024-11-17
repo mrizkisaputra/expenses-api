@@ -5,7 +5,7 @@ import "github.com/google/uuid"
 type ApiUserResponse struct {
 	Status  int         `json:"status"`
 	Message string      `json:"message"`
-	Data    interface{} `json:"omitempty,data"`
+	Data    interface{} `json:"data,omitempty"`
 }
 
 type UserTokenResponse struct {
@@ -26,9 +26,9 @@ type UserResponse struct {
 	LastName    string    `json:"last_name"`
 	Email       string    `json:"email"`
 	Password    string    `json:"password"`
-	Avatar      *string   `json:"avatar"`
-	City        *string   `json:"city"`
-	PhoneNumber *string   `json:"phone_number"`
+	Avatar      string    `json:"avatar"`
+	City        string    `json:"city"`
+	PhoneNumber string    `json:"phone_number"`
 	CreatedAt   int64     `json:"created_at"`
 	UpdatedAt   int64     `json:"updated_at"`
 }
