@@ -20,7 +20,7 @@ import (
 
 var cfg = &config.Config{
 	AWS: config.AwsConfig{
-		Endpoint: "http://localhost:9000",
+		MinioEndpoint: "http://localhost:9000",
 	},
 }
 
@@ -151,24 +151,44 @@ func TestUserService_Update(t *testing.T) {
 			UserRedisRepository:    mockRedisRepo,
 		})
 
-		id := uuid.New()
-		mockUser := &model.User{
-			Id:    id,
-			Email: "mrizkisaputra_updated@gmail.com",
+		userID := uuid.New()
+		city := "south sumatera"
+
+		// Mock data pengguna lama
+		oldUser := &model.User{
+			Id:    userID,
+			Email: "oldemail@example.com",
 			Information: model.Information{
-				FirstName: "Muhammat updated",
-				LastName:  "Saputra updated",
+				FirstName:   "OldFirstName",
+				LastName:    "OldLastName",
+				City:        &city,
+				PhoneNumber: nil,
 			},
 		}
-		mockPgRepo.On("Update", mock.Anything, mock.Anything).Return(mockUser, nil)
+
+		// Mock data pengguna baru untuk diupdate
+		updateUser := &model.User{
+			Id:    userID,
+			Email: "newemail@example.com",
+			Information: model.Information{
+				FirstName:   "NewFirstName",
+				LastName:    "",  // Tidak diupdate karena kosong
+				City:        nil, // Tidak diupdate karena nil
+				PhoneNumber: nil, // Tidak diupdate karena nil
+			},
+		}
+
+		mockPgRepo.On("FindById", mock.Anything, mock.Anything).Return(oldUser, nil)
+		mockPgRepo.On("Update", mock.Anything, mock.Anything).Return(oldUser, nil)
 		mockRedisRepo.On("Delete", mock.Anything, mock.Anything).Return(nil)
 
-		response, err := us.Update(context.Background(), mockUser)
+		response, err := us.Update(context.Background(), updateUser)
 
 		require.Nil(t, err)
 		require.NoError(t, err)
 		require.NotNil(t, response)
-		require.Equal(t, converter.ToUserResponse(mockUser), response)
+		require.Equal(t, "newemail@example.com", response.Email)
+		require.Equal(t, "NewFirstName", response.FirstName)
 		mockPgRepo.AssertExpectations(t)
 		mockRedisRepo.AssertExpectations(t)
 	})
@@ -188,6 +208,7 @@ func TestUserService_Update(t *testing.T) {
 			},
 		}
 
+		mockPgRepo.On("FindById", mock.Anything, mock.Anything).Return(mockUser, nil)
 		mockPgRepo.On("Update", mock.Anything, mock.Anything).Return(nil, httpErrors.NewInternalServerError(nil))
 
 		response, err := us.Update(context.Background(), mockUser)
@@ -232,7 +253,7 @@ func TestUserService_UploadAvatar(t *testing.T) {
 		mockAwsRepo.On("PutObject", mock.Anything, mock.Anything).Return(uploadInfo, nil)
 		mockPgRepo.On("Update", mock.Anything, mock.Anything).Return(mockUser, nil)
 
-		response, err := us.UploadAvatar(context.Background(), &mockFile, id)
+		response, err := us.UploadAvatar(context.Background(), id, &mockFile)
 		require.Nil(t, err)
 		require.NoError(t, err)
 		require.NotNil(t, response)

@@ -1,6 +1,7 @@
 package model
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/pkg/errors"
 	"golang.org/x/crypto/bcrypt"
@@ -45,6 +46,7 @@ func (u *User) PrepareCreate() error {
 
 // compare password
 func (u *User) ComparePassword(hashedPassword string) error {
+	fmt.Println(u.Password)
 	if err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(u.Password)); err != nil {
 		return errors.Wrap(err, "User.ComparePassword.CompareHashAndPassword")
 	}
@@ -52,32 +54,32 @@ func (u *User) ComparePassword(hashedPassword string) error {
 }
 
 // prepare update user
-func (u *User) PrepareUpdate() error {
+func (u *User) PrepareUpdate(oldData *User) error {
 	if u.Information.FirstName != "" {
-		u.Information.FirstName = strings.TrimSpace(u.Information.FirstName)
+		oldData.Information.FirstName = strings.TrimSpace(u.Information.FirstName)
 	}
 
 	if u.Information.LastName != "" {
-		u.Information.LastName = strings.TrimSpace(u.Information.LastName)
+		oldData.Information.LastName = strings.TrimSpace(u.Information.LastName)
 	}
 
 	if u.Email != "" {
-		u.Email = strings.ToLower(strings.TrimSpace(u.Email))
+		oldData.Email = strings.ToLower(strings.TrimSpace(u.Email))
 	}
 
-	if u.Password != "" {
-		u.Password = strings.TrimSpace(u.Password)
-		if err := u.HashPassword(); err != nil {
-			return err
-		}
-	}
+	//if u.Password != "" {
+	//	u.Password = strings.TrimSpace(u.Password)
+	//	if err := u.HashPassword(); err != nil {
+	//		return err
+	//	}
+	//}
 
 	if u.Information.City != nil {
-		*u.Information.City = strings.TrimSpace(*u.Information.City)
+		*oldData.Information.City = strings.TrimSpace(*u.Information.City)
 	}
 
 	if u.Information.PhoneNumber != nil {
-		*u.Information.PhoneNumber = strings.TrimSpace(*u.Information.PhoneNumber)
+		*oldData.Information.PhoneNumber = strings.TrimSpace(*u.Information.PhoneNumber)
 	}
 
 	return nil

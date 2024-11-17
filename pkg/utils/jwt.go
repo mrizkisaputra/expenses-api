@@ -2,22 +2,24 @@ package utils
 
 import (
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"github.com/mrizkisaputra/expenses-api/config"
 	"github.com/mrizkisaputra/expenses-api/internal/user/model"
+	"github.com/mrizkisaputra/expenses-api/pkg/httpErrors"
 	"github.com/pkg/errors"
 	"time"
 )
 
-// JWT Claims
+// Claim JWT Claims
 type Claim struct {
-	ID    string
+	ID    uuid.UUID
 	Email string
 	jwt.RegisteredClaims
 }
 
 func GenerateJwtToken(user *model.User, cfg *config.Config, expire time.Duration) (string, error) {
 	claims := Claim{
-		ID:    user.Id.String(),
+		ID:    user.Id,
 		Email: user.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(time.Now().Add(expire)),
@@ -36,7 +38,7 @@ func GenerateJwtToken(user *model.User, cfg *config.Config, expire time.Duration
 	return tokenString, nil
 }
 
-// generate JWT access token & refresh token
+// GenerateTokenPair generate JWT access token & refresh token
 func GenerateTokenPair(user *model.User, cfg *config.Config) (accToken, refToken string, err error) {
 	accToken, err = GenerateJwtToken(user, cfg, 15*time.Minute) // 15 minute
 	if err != nil {
@@ -44,4 +46,23 @@ func GenerateTokenPair(user *model.User, cfg *config.Config) (accToken, refToken
 	}
 	refToken, err = GenerateJwtToken(user, cfg, 1*24*time.Hour) // 1 day
 	return
+}
+
+// ValidateJwtToken
+func ValidateJwtToken(tokenString string, cfg *config.Config) (*Claim, error) {
+	token, err := jwt.ParseWithClaims(tokenString, &Claim{}, func(token *jwt.Token) (interface{}, error) {
+		secretKey := []byte(cfg.Server.JWTSecretKey)
+		return secretKey, nil
+	})
+
+	if err != nil {
+		return nil, httpErrors.NewInvalidJwtTokenError(errors.Wrap(err, "ValidateJwtToken.ParseWithClaims"))
+	}
+
+	claims, ok := token.Claims.(*Claim)
+	if !ok || !token.Valid {
+		return nil, httpErrors.NewInternalServerError("unknown claims type, cannot proceed")
+	}
+
+	return claims, nil
 }

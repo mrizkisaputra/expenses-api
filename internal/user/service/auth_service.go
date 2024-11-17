@@ -21,10 +21,10 @@ type authService struct {
 
 // NewAuthService is a factory function for
 // initializing a authService with its repository layer dependencies
-func NewAuthService(sc *ServiceConfig) user.AuthService {
+func NewAuthService(config *ServiceConfig) user.AuthService {
 	return &authService{
-		cfg:    sc.Config,
-		pgRepo: sc.UserPostgresRepository,
+		cfg:    config.Config,
+		pgRepo: config.UserPostgresRepository,
 	}
 }
 
@@ -61,7 +61,7 @@ func (auth *authService) Login(ctx context.Context, user *model.User) (*dto.JwtT
 	}
 
 	// generate a JWT token
-	accessToken, refreshToken, err := utils.GenerateTokenPair(user, auth.cfg)
+	accessToken, refreshToken, err := utils.GenerateTokenPair(foundUser, auth.cfg)
 	if err != nil {
 		return nil, httpErrors.NewInternalServerError(err)
 	}

@@ -44,23 +44,25 @@ func (u *userPostgresRepository) Update(ctx context.Context, entity *model.User)
 }
 
 func (u *userPostgresRepository) FindByEmail(ctx context.Context, entity *model.User) (*model.User, error) {
+	user := new(model.User)
 	DB := u.db.WithContext(ctx)
 
 	// SELECT * FROM "users" WHERE "users"."email" = ? LIMIT 1
-	if err := DB.Where(model.User{Email: entity.Email}).Take(entity).Error; err != nil {
+	if err := DB.Where(model.User{Email: entity.Email}).Take(user).Error; err != nil {
 		return nil, errors.Wrap(err, "UserPostgresRepository.FindByEmail.Take")
 	}
-	return entity, nil
+	return user, nil
 }
 
 func (u *userPostgresRepository) FindById(ctx context.Context, entity *model.User) (*model.User, error) {
+	user := new(model.User)
 	DB := u.db.WithContext(ctx)
 
 	// SELECT * FROM "users" WHERE "users"."id" = ? LIMIT 1
-	if err := DB.Take(entity).Error; err != nil {
+	if err := DB.Where(model.User{Id: entity.Id}).Take(user).Error; err != nil {
 		return nil, errors.Wrap(err, "UserPostgresRepository.FindById.Take")
 	}
-	return entity, nil
+	return user, nil
 }
 
 func (u *userPostgresRepository) FindAlreadyExistByEmail(ctx context.Context, entity *model.User) (int64, error) {

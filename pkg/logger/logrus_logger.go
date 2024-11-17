@@ -16,7 +16,7 @@ func NewLogrusLogger(cfg *config.Config) *logrus.Logger {
 	level := getLogrusLevel(cfg)
 
 	var formatter logrus.Formatter
-	if cfg.Server.Mode == "Development" {
+	if cfg.Logger.Encoding == "text" {
 		formatter = &logrus.TextFormatter{
 			TimestampFormat: "2006/01/02 15:04:05",
 			DisableColors:   false,
@@ -29,6 +29,10 @@ func NewLogrusLogger(cfg *config.Config) *logrus.Logger {
 		formatter = &logrus.JSONFormatter{
 			TimestampFormat: "2006/01/02 15:04:05",
 			PrettyPrint:     true,
+			CallerPrettyfier: func(frame *runtime.Frame) (function string, file string) {
+				file = fmt.Sprintf("%s:%d", frame.File, frame.Line)
+				return function, filepath.Base(file)
+			},
 		}
 	}
 

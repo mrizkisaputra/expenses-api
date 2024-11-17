@@ -21,5 +21,5 @@ type UserService interface {
 
 	Update(ctx context.Context, user *model.User) (*dto.UserResponse, error)
 
-	UploadAvatar(ctx context.Context, file *model.UserUploadInput, id uuid.UUID) (*dto.UserResponse, error)
+	UploadAvatar(ctx context.Context, id uuid.UUID, file *model.UserUploadInput) (*dto.UserResponse, error)
 }

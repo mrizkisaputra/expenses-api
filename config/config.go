@@ -11,6 +11,7 @@ type Config struct {
 	Server   ServerConfig
 	Postgres PostgresConfig
 	Logger   LoggerConfig
+	Redis    RedisConfig
 	AWS      AwsConfig
 }
 
@@ -43,7 +44,20 @@ type LoggerConfig struct {
 }
 
 type AwsConfig struct {
-	Endpoint string
+	Endpoint       string
+	MinioEndpoint  string
+	MinioAccessKey string
+	MinioSecretKey string
+	UseSSL         bool
+}
+
+type RedisConfig struct {
+	Addr         string
+	DB           int
+	MinIdleConns int
+	PoolSize     int
+	PoolTimeout  time.Duration
+	Password     string
 }
 
 func NewAppConfig(configPath string) (*Config, error) {

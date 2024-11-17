@@ -3,9 +3,9 @@ package dto
 import "github.com/google/uuid"
 
 type ApiUserResponse struct {
-	Status  int
-	Message string
-	Data    interface{}
+	Status  int         `json:"status"`
+	Message string      `json:"message"`
+	Data    interface{} `json:"omitempty,data"`
 }
 
 type UserTokenResponse struct {
@@ -21,14 +21,14 @@ type JwtToken struct {
 
 // UserResponse Model DTO response user
 type UserResponse struct {
-	Id          uuid.UUID `json:"id,omitempty"`
-	FirstName   string    `json:"first_name,omitempty"`
-	LastName    string    `json:"last_name,omitempty"`
-	Email       string    `json:"email,omitempty"`
-	Password    string    `json:"password,omitempty"`
-	Avatar      *string   `json:"avatar,omitempty"`
-	City        *string   `json:"city,omitempty"`
-	PhoneNumber *string   `json:"phone_number,omitempty"`
-	CreatedAt   int64     `json:"created_at,omitempty"`
-	UpdatedAt   int64     `json:"updated_at,omitempty"`
+	Id          uuid.UUID `json:"id"`
+	FirstName   string    `json:"first_name"`
+	LastName    string    `json:"last_name"`
+	Email       string    `json:"email"`
+	Password    string    `json:"password"`
+	Avatar      *string   `json:"avatar"`
+	City        *string   `json:"city"`
+	PhoneNumber *string   `json:"phone_number"`
+	CreatedAt   int64     `json:"created_at"`
+	UpdatedAt   int64     `json:"updated_at"`
 }

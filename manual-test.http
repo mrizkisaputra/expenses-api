@@ -1,0 +1,12 @@
+### Login
+POST https://localhost:8080/api/v1/user/login
+Content-Type: application/json
+
+{
+  "email": "jhonsmith@gmail.com",
+  "password": "secret12345"
+}
+
+### Get current user
+GET https://localhost:8080/api/v1/user/me
+Authorization: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJJRCI6IjliNWI5Y2NmLTBiNDgtNDQyYS1hNmIwLTYzYmE5NWVhYzBhYiIsIkVtYWlsIjoiamhvbnNtaXRoQGdtYWlsLmNvbSIsImlzcyI6Imp3dCIsImV4cCI6MTczMTUxMTIyNn0.Ai4MwJf8BOy3GVqw26SmqwgBno9BwV84Cn3yxq2dKDI

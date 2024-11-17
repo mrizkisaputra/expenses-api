@@ -12,7 +12,7 @@
   },
   "basePath": "/api/v1",
   "paths": {
-    "/auth/register": {
+    "/user/register": {
       "post": {
         "summary": "Register new user",
         "description": "register new user, return user",
@@ -88,7 +88,7 @@
         }
       }
     },
-    "/auth/login": {
+    "/user/login": {
       "post": {
         "summary": "Login new user",
         "description": "login user, returns user and token",
@@ -165,7 +165,7 @@
         }
       }
     },
-    "/auth/me": {
+    "/user/me": {
       "get": {
         "summary": "Get current user",
         "description": "get current user",
@@ -228,6 +228,53 @@
             "description": "Accepted",
             "schema": {
               "$ref": "#/definitions/body.User"
+            }
+          }
+        }
+      }
+    },
+    "/user/avatar": {
+      "post": {
+        "summary": "Post Avatar",
+        "description": "post avatar user image",
+        "consumes": ["multipart/form-data"],
+        "produces": ["application/json"],
+        "tags": ["User API"],
+        "parameters": [
+          {
+            "type": "string",
+            "in": "header",
+            "name": "Authorization",
+            "required": true,
+            "description": "Bearer access_token"
+          },
+          {
+            "in": "formData",
+            "name": "avatar",
+            "type": "string",
+            "format": "binary",
+            "required": true,
+            "description": "binary image file"
+          },
+          {
+            "in": "query",
+            "type": "string",
+            "name": "bucket",
+            "required": true,
+            "description": "minio s3 bucket name"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "avatar": {
+                  "type": "string",
+                  "format": "url"
+                }
+              }
             }
           }
         }
@@ -538,18 +585,26 @@
     "httpErrors.RestError": {
       "type": "object",
       "properties": {
-        "status": {
-          "type": "integer"
-        },
-        "message": {
-          "type": "string"
-        },
-        "errors": {
-          "type": "array",
-          "format": "arrays of object",
-          "items": {
-            "$ref": "#/definitions/httpErrors.ErrBadRequestAuthItems"
+        "error": {
+          "type": "object",
+          "properties": {
+            "status": {
+              "type": "integer"
+            },
+            "message": {
+              "type": "string"
+            },
+            "sub_errors": {
+              "type": "array",
+              "format": "arrays of object",
+              "items": {
+                "$ref": "#/definitions/httpErrors.ErrBadRequestAuthItems"
+              }
+            }
           }
+        },
+        "request_id": {
+          "type": "string"
         }
       }
     },
@@ -575,50 +630,41 @@
         },
         "message": {
           "type": "string"
+        },
+        "request_id": {
+          "type": "string"
         }
       }
     },
     "body.User": {
       "type": "object",
-      "required": [
-        "email",
-        "password",
-        "first_name",
-        "last_name"
-      ],
       "properties": {
         "first_name": {
           "type": "string",
-          "maxLength": 100
+          "maxLength": 100,
+          "format": "optional"
         },
         "last_name": {
           "type": "string",
-          "maxLength": 100
+          "maxLength": 100,
+          "format": "optional"
         },
         "email": {
           "type": "string",
           "maxLength": 100,
-          "uniqueItems": true
-        },
-        "password": {
-          "type": "string",
-          "maxLength": 100
-        },
-        "avatar": {
-          "type": "string",
-          "maxLength": 100
+          "uniqueItems": true,
+          "format": "optional"
         },
         "city": {
           "type": "string",
-          "maxLength": 100
+          "maxLength": 100,
+          "format": "optional"
         },
         "phone_number": {
           "type": "string",
           "maxLength": 13,
+          "format": "optional",
           "uniqueItems": true
-        },
-        "updated_at": {
-          "type": "integer"
         }
       }
     },

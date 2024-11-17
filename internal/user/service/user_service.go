@@ -32,13 +32,13 @@ type userService struct {
 
 // NewUserService is a factory function for
 // initializing a userService with its repository layer dependencies.
-func NewUserService(sc *ServiceConfig) user.UserService {
+func NewUserService(config *ServiceConfig) user.UserService {
 	return &userService{
-		cfg:       sc.Config,
-		pgRepo:    sc.UserPostgresRepository,
-		redisRepo: sc.UserRedisRepository,
-		awsRepo:   sc.AwsUserRepository,
-		logger:    sc.Logger,
+		cfg:       config.Config,
+		pgRepo:    config.UserPostgresRepository,
+		redisRepo: config.UserRedisRepository,
+		awsRepo:   config.AwsUserRepository,
+		logger:    config.Logger,
 	}
 }
 
@@ -66,7 +66,7 @@ func (u *userService) GetCurrentUser(ctx context.Context, id string) (*dto.UserR
 
 	// cache data to redis
 	if err := u.redisRepo.Set(ctx, utils.GenerateRedisKey(basePrefix, id), cacheDuration, currentUser); err != nil {
-		u.logger.WithError(err).Error("UserService.GetCurrentUser.redisRepo.Set")
+		u.logger.WithError(err).Error("Error when save in cache redis")
 	}
 
 	return converter.ToUserResponse(currentUser), nil
@@ -74,13 +74,19 @@ func (u *userService) GetCurrentUser(ctx context.Context, id string) (*dto.UserR
 
 // Update update current user
 func (u *userService) Update(ctx context.Context, user *model.User) (*dto.UserResponse, error) {
-	if err := user.PrepareUpdate(); err != nil {
+	userFound, err := u.pgRepo.FindById(ctx, &model.User{Id: user.Id})
+	u.logger.Debug(userFound)
+	if err != nil {
+		return nil, httpErrors.NewNotFoundError(errors.Wrap(err, "UserService.Update.FindById"))
+	}
+
+	if err := user.PrepareUpdate(userFound); err != nil {
 		return nil, httpErrors.NewInternalServerError(err)
 	}
 
-	updatedUser, err := u.pgRepo.Update(ctx, user)
+	updatedUser, err := u.pgRepo.Update(ctx, userFound)
 	if err != nil {
-		return nil, httpErrors.NewInternalServerError(err)
+		return nil, httpErrors.NewInternalServerError(errors.Wrap(err, "UserService.GetCurrentUser.Update"))
 	}
 
 	// delete redis cache data
@@ -92,7 +98,7 @@ func (u *userService) Update(ctx context.Context, user *model.User) (*dto.UserRe
 }
 
 // UploadAvatar upload file
-func (u *userService) UploadAvatar(ctx context.Context, file *model.UserUploadInput, id uuid.UUID) (*dto.UserResponse, error) {
+func (u *userService) UploadAvatar(ctx context.Context, id uuid.UUID, file *model.UserUploadInput) (*dto.UserResponse, error) {
 	// upload to aws s3
 	uploadInfo, err := u.awsRepo.PutObject(ctx, file)
 	if err != nil {
