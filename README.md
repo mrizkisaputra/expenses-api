@@ -36,7 +36,8 @@ Daftar framework & library apa saja yang digunakan:
 - [Go Playground Validator](https://github.com/go-playground/validator) - Validation
 - [go jwt](https://github.com/golang-jwt/jwt) - JSON Web token
 - [testify](https://github.com/stretchr/testify) - Testing toolkit
-- [gomock](https://github.com/golang/mock) - Mocking framework
+- [miniredis](https://github.com/alicebob/miniredis) - Mock redis server
+- [sqlmock](https://github.com/DATA-DOG/go-sqlmock) - Mock db sql
 
 
 ## API Documentation
@@ -49,3 +50,14 @@ Api spec is in directory [docs](./docs)
 
 ### Docker development usage  
     make develop
+
+## Run Unit Test
+
+    # run unit-test user repository
+    make user-repository-test
+
+    # run unit-test user service/usecase
+    make user-service-test
+
+    # run unit-test user controller
+    make user-controller-test

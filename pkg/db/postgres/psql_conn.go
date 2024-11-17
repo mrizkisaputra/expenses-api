@@ -3,6 +3,7 @@ package postgres
 import (
 	"fmt"
 	"github.com/mrizkisaputra/expenses-api/config"
+	"github.com/pkg/errors"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 	"gorm.io/gorm/logger"
@@ -26,15 +27,16 @@ func NewPostgresConn(cfg *config.Config) (*gorm.DB, error) {
 		cfg.Postgres.Port,
 	)
 	db, err := gorm.Open(postgres.Open(dataSourceName), &gorm.Config{
-		Logger: logger.Default.LogMode(getLoggerLevel(cfg)),
+		Logger:                 logger.Default.LogMode(getLoggerLevel(cfg)),
+		SkipDefaultTransaction: true,
 	})
 	if err != nil {
-		return nil, fmt.Errorf("error connecting to database: %v", err)
+		return nil, errors.Wrap(err, "NewPostgresConn.Open")
 	}
 
 	sqlDb, err := db.DB()
 	if err != nil {
-		return nil, err
+		return nil, errors.Wrap(err, "NewPostgresConn.DB")
 	}
 	sqlDb.SetMaxOpenConns(maxOpenConns)
 	sqlDb.SetConnMaxLifetime(time.Second * connMaxLifetime)

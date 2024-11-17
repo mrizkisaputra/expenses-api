@@ -2,6 +2,27 @@ version: "3.8"
 
 services:
 
+  minio:
+    image: minio/minio:latest
+    container_name: myminio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio-data:/data
+    networks:
+      - web-api
+
+  redis:
+    image: redis:6.0.9-alpine
+    container_name: api_redis
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - web-api
+
   postgresql:
     image: postgres:16-alpine
     container_name: api_postgresql
@@ -28,9 +49,11 @@ services:
     networks:
       - web-api
 
+
 #global volume
 volumes:
   postgres-db-volume:
+  minio-data:
 
 #global network
 networks:

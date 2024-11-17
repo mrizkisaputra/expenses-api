@@ -11,6 +11,8 @@ type Config struct {
 	Server   ServerConfig
 	Postgres PostgresConfig
 	Logger   LoggerConfig
+	Redis    RedisConfig
+	AWS      AwsConfig
 }
 
 // Server config
@@ -21,6 +23,7 @@ type ServerConfig struct {
 	WriteTimeout time.Duration
 	Mode         string
 	SSL          bool
+	JWTSecretKey string
 }
 
 // Postgresql config
@@ -38,6 +41,23 @@ type LoggerConfig struct {
 	Caller      bool
 	Encoding    string
 	Development bool
+}
+
+type AwsConfig struct {
+	Endpoint       string
+	MinioEndpoint  string
+	MinioAccessKey string
+	MinioSecretKey string
+	UseSSL         bool
+}
+
+type RedisConfig struct {
+	Addr         string
+	DB           int
+	MinIdleConns int
+	PoolSize     int
+	PoolTimeout  time.Duration
+	Password     string
 }
 
 func NewAppConfig(configPath string) (*Config, error) {
