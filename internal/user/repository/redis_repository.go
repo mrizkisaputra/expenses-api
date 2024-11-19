@@ -28,7 +28,7 @@ func (u *userRedisRepository) Set(ctx context.Context, key string, expiration ti
 		return errors.Wrap(err, "UserRedisRepository.Set.json.Marshal")
 	}
 
-	if err := u.redisClient.Set(ctx, key, userBytes, expiration).Err(); err != nil {
+	if err := u.redisClient.Set(ctx, key, userBytes, time.Second*expiration).Err(); err != nil {
 		return errors.Wrap(err, "UserRedisRepository.Set.redisClient.Set")
 	}
 	return nil

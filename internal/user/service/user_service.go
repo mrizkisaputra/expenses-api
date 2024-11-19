@@ -17,7 +17,7 @@ import (
 
 const (
 	basePrefix    = "user-api"
-	cacheDuration = 3600
+	cacheDuration = 120
 )
 
 // userService acts as a struct for injecting an implementation of UserService interface
@@ -51,7 +51,7 @@ func (u *userService) GetCurrentUser(ctx context.Context, id string) (*dto.UserR
 	// get data from redis cache
 	cacheUser, err := u.redisRepo.Get(ctx, utils.GetRedisKey(basePrefix, id))
 	if err != nil {
-		u.logger.WithError(err).Error("UserService.GetCurrentUser.redisRepo.Get")
+		u.logger.WithError(err).Debug("UserService.GetCurrentUser.redisRepo.Get")
 	}
 
 	if cacheUser != nil {
