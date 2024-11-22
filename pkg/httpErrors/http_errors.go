@@ -142,6 +142,7 @@ func validationError(err validator.ValidationErrors) *[]ApiValidationError {
 		"min":      "TO_SHORT",
 		"alpha":    "MUST_ALPHA",
 		"numeric":  "MUST_NUMERIC",
+		"uuid":     "MUST_UUID",
 	}
 	for _, e := range err {
 		if msg, ok := fieldTagMessage[e.Tag()]; ok {

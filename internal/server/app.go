@@ -2,6 +2,10 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
+	expenseController "github.com/mrizkisaputra/expenses-api/internal/expense/controllers/http"
+	expenseRoute "github.com/mrizkisaputra/expenses-api/internal/expense/controllers/http"
+	expenseRepository "github.com/mrizkisaputra/expenses-api/internal/expense/repository"
+	expenseService "github.com/mrizkisaputra/expenses-api/internal/expense/service"
 	"github.com/mrizkisaputra/expenses-api/internal/middleware"
 	userController "github.com/mrizkisaputra/expenses-api/internal/user/controllers/http"
 	userRoute "github.com/mrizkisaputra/expenses-api/internal/user/controllers/http"
@@ -17,6 +21,8 @@ func (s *Server) Bootstrap() error {
 	userRedisRepo := userRepository.NewUserRedisRepository(s.redisClient)
 	userAwsRepo := userRepository.NewAWSUserRepository(s.awsClient)
 
+	expenseRepo := expenseRepository.NewExpensePgRepository(s.db)
+
 	// -----------------------------------------------------------------------------------------------------------
 	// create a new instance services
 	authSV := userService.NewAuthService(&userService.ServiceConfig{
@@ -31,6 +37,12 @@ func (s *Server) Bootstrap() error {
 		AwsUserRepository:      userAwsRepo,
 	})
 
+	expenseSV := expenseService.NewExpenseService(&expenseService.ServiceConfig{
+		PgRepo: expenseRepo,
+		Logger: s.logger,
+		Config: s.cfg,
+	})
+
 	// -----------------------------------------------------------------------------------------------------------
 	// create a new instance controllers
 	authController := userController.NewAuthController(&userController.ControllerConfig{
@@ -42,6 +54,11 @@ func (s *Server) Bootstrap() error {
 		Config:      s.cfg,
 		Logger:      s.logger,
 		UserService: userSV,
+	})
+
+	expenseCntrl := expenseController.NewExpenseController(&expenseController.ControllerConfig{
+		ExpenseService: expenseSV,
+		Logger:         s.logger,
 	})
 
 	// -----------------------------------------------------------------------------------------------------------
@@ -66,9 +83,9 @@ func (s *Server) Bootstrap() error {
 		}
 
 		// group expense routes
-		_ = apiV1.Group("/expenses")
+		expenseGroup := apiV1.Group("/expenses")
 		{
-
+			expenseRoute.MapExpenseRoutes(expenseGroup, expenseCntrl, middlewareManager)
 		}
 	}
 
