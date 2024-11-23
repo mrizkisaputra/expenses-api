@@ -1,6 +1,5 @@
 # ==============================================================================
 # Golang commands
-
 run:
 	go run ./cmd/api/main.go
 
@@ -18,9 +17,10 @@ user-service-test:
 
 user-controller-test:
 	go test -v ./internal/user/controllers/http
+#===============================================================================
+
 # ==============================================================================
 # Docker compose commands
-
 local:
 	echo "Starting local environment"
 	docker-compose -f docker-compose-local.yaml up --build -d
@@ -28,15 +28,16 @@ local:
 develop:
 	echo "Starting docker environment"
 	docker compose -f docker-compose-dev.yaml up --build -d
+#===============================================================================
 
 # ==============================================================================
 # Go migrate postgresql
-
 migrate_up:
 	migrate -database=postgres://postgres:postgres@localhost:5444/db_20102024?sslmode=disable -path=migrations up
 
 migrate_down:
 	migrate -database=postgres://postgres:postgres@localhost:5444/db_20102024?sslmode=disable -path=migrations down
+#===============================================================================
 
 # ==============================================================================
 # SSL/TLS commands
@@ -49,6 +50,7 @@ gen_private_key:
 #generate self-signed certificate (public key)
 gen_self_signed_cert:
 	openssl req -new -x509 -sha256 -key server.key -out server.crt -days 3650
+#===============================================================================
 
 # ==============================================================================
 # Docker support

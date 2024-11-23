@@ -15,4 +15,8 @@ type PostgresRepository interface {
 	Remove(ctx context.Context, expense *model.Expense) error
 
 	Update(ctx context.Context, expense *model.Expense) error
+
+	FindAll(ctx context.Context, userId string, offset, limit int) ([]model.Expense, int64, error)
+
+	FindAllByDateRange(ctx context.Context, userId string, startDate, endDate int64, offset, limit int) ([]model.Expense, int64, error)
 }

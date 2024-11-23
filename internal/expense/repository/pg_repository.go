@@ -63,3 +63,63 @@ func (p *postgresRepository) Update(ctx context.Context, expense *model.Expense)
 	}
 	return nil
 }
+
+func (p *postgresRepository) FindAll(ctx context.Context, userId string, offset, limit int) ([]model.Expense, int64, error) {
+	DB := p.db.WithContext(ctx)
+
+	/**
+	SQL: SELECT * FROM "expenses" WHERE id_user = ? AND "expenses"."deleted_at" IS NULL LIMIT 10
+	*/
+	var expenses []model.Expense
+	if err := DB.Offset((offset-1)*limit).
+		Limit(limit).
+		Where("id_user = ?", userId).
+		Find(&expenses).Error; err != nil {
+		return nil, 0, errors.Wrap(err, "postgresRepository.FindAll.Find")
+	}
+
+	/**
+	SQL: SELECT count(*) FROM "expenses" WHERE "expenses"."deleted_at" IS NULL
+	*/
+	var count int64
+	if err := DB.Model(&model.Expense{}).Count(&count).Error; err != nil {
+		return nil, 0, errors.Wrap(err, "postgresRepository.FindAll.Count")
+	}
+
+	return expenses, count, nil
+}
+
+func (p *postgresRepository) FindAllByDateRange(
+	ctx context.Context,
+	userId string,
+	startDate, endDate int64,
+	offset, limit int,
+) ([]model.Expense, int64, error) {
+	DB := p.db.WithContext(ctx)
+
+	/**
+	SQL:
+	*/
+	var expenses []model.Expense
+	if err := DB.Where("id_user = ? AND created_at BETWEEN ? AND ?", userId, startDate, endDate).
+		Order("created_at DESC").
+		Offset((offset - 1) * limit).
+		Limit(limit).
+		Find(&expenses).Error; err != nil {
+
+		return nil, 0, errors.Wrap(err, "postgresRepository.FindAllByDateRange")
+	}
+
+	/**
+	SQL:
+	*/
+	var total int64
+	if err := DB.Model(&model.Expense{}).
+		Where("id_user = ? AND created_at BETWEEN ? AND ?", userId, startDate, endDate).
+		Count(&total).Error; err != nil {
+
+		return nil, 0, errors.Wrap(err, "postgresRepository.FindAllByDateRange.Count")
+	}
+
+	return expenses, total, nil
+}

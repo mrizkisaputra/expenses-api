@@ -6,10 +6,11 @@ import (
 	"github.com/mrizkisaputra/expenses-api/internal/middleware"
 )
 
-func MapExpenseRoutes(authGroup *gin.RouterGroup, controller ExpenseController, mw *middleware.MiddlewareManager) {
-	authGroup.Use(mw.AuthJwtMiddleware())
-	authGroup.POST("/create", controller.CreateNewExpense())
-	authGroup.GET("/:id", controller.GetExpenseById())
-	authGroup.DELETE("/:id", controller.DeleteExpense())
-	authGroup.PATCH("/:id", controller.UpdateExpense())
+func MapExpenseRoutes(expenseGroup *gin.RouterGroup, controller ExpenseController, mw *middleware.MiddlewareManager) {
+	expenseGroup.Use(mw.AuthJwtMiddleware())
+	expenseGroup.POST("/create", controller.CreateNewExpense())
+	expenseGroup.GET("/:id", controller.GetExpenseById())
+	expenseGroup.DELETE("/:id", controller.DeleteExpense())
+	expenseGroup.PATCH("/:id", controller.UpdateExpense())
+	expenseGroup.GET("/", controller.GetAllExpense())
 }

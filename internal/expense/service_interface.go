@@ -15,4 +15,6 @@ type ExpenseService interface {
 	Update(ctx context.Context, request *model.Expense) (*model.Expense, error)
 
 	GetById(ctx context.Context, id, userId string) (*model.Expense, error)
+
+	GetAll(ctx context.Context, userId string, request *model.SearchExpenseRequestQueryParam) ([]model.Expense, int64, error)
 }

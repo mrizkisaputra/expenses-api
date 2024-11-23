@@ -11,6 +11,7 @@ import (
 	"github.com/mrizkisaputra/expenses-api/pkg/utils"
 	"github.com/mrizkisaputra/expenses-api/pkg/validator"
 	"github.com/sirupsen/logrus"
+	"math"
 	"net/http"
 )
 
@@ -185,6 +186,37 @@ func (ec expenseController) UpdateExpense() gin.HandlerFunc {
 
 func (ec expenseController) GetAllExpense() gin.HandlerFunc {
 	return func(ctx *gin.Context) {
+		auth := middleware.GetAuth(ctx)
 
+		request := new(model.SearchExpenseRequestQueryParam)
+		if err := utils.ReadRequest(ctx, request, binding.Query); err != nil {
+			utils.LogErrorResponse(ctx, ec.logger, err)
+			ctx.JSON(httpErrors.ErrorResponse(ctx, err))
+			return
+		}
+
+		if request.Page == 0 {
+			request.Page = 1
+		}
+		if request.Limit == 0 {
+			request.Limit = 10
+		}
+
+		expenses, total, err := ec.expenseService.GetAll(ctx, auth.Id.String(), request)
+		if err != nil {
+			utils.LogErrorResponse(ctx, ec.logger, err)
+			ctx.JSON(httpErrors.ErrorResponse(ctx, err))
+			return
+		}
+
+		ctx.JSON(http.StatusOK, &model.ApiResponse{
+			Status:     http.StatusOK,
+			Message:    "OK",
+			Data:       expenses,
+			Page:       request.Page,
+			Limit:      request.Limit,
+			TotalItems: total,
+			TotalPages: int64(math.Ceil(float64(total) / float64(request.Limit))),
+		})
 	}
 }

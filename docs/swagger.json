@@ -344,7 +344,7 @@
         }
       }
     },
-    "/expenses": {
+    "/expenses/create": {
       "post": {
         "summary": "Create expense",
         "description": "create new expense, return expense",
@@ -401,7 +401,9 @@
             }
           }
         }
-      },
+      }
+    },
+    "/expenses": {
       "get": {
         "summary": "Search expense",
         "description": "Get all expenses",
@@ -778,12 +780,8 @@
       }
     },
     "body.Expense": {
-      "required": [
-        "amount",
-        "description",
-        "category"
-      ],
       "type": "object",
+      "required": ["description", "amount", "category"],
       "properties": {
         "description": {
           "type": "string",
