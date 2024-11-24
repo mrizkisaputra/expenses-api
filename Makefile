@@ -23,11 +23,11 @@ user-controller-test:
 # Docker compose commands
 local:
 	echo "Starting local environment"
-	docker-compose -f docker-compose-local.yaml up --build -d
+	docker-compose -f docker-compose.local.yaml up --build -d
 
 develop:
 	echo "Starting docker environment"
-	docker compose -f docker-compose-dev.yaml up --build -d
+	docker compose -f docker-compose.dev.yaml up --build -d
 #===============================================================================
 
 # ==============================================================================

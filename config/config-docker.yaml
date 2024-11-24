@@ -1,0 +1,42 @@
+server:
+  Host: localhost
+  Port: 5000
+  ReadTimeout: 10
+  WriteTimeout: 10
+  Mode: Development
+  SSL: true
+  JWTSecretKey: ApWynlzzJXSlWGmnu50jBYzSjaawrcXn
+
+postgres:
+  User: postgres
+  Password: postgres
+  Host: localhost
+  Port: 5433
+  Dbname: db_20102024
+
+redis:
+  Addr: localhost:6379
+  DB: 0
+  MinIdleConns: 200
+  PoolSize: 12000
+  PoolTimeout: 240
+  Password: ""
+
+logger:
+  Level: info
+  Caller: false
+  Encoding: json
+  Development: true
+
+aws:
+  Endpoint: localhost:9000
+  MinioEndpoint: http://127.0.0.1:9000
+  MinioAccessKey: iuqiDShZCCDZGPYJxoSX
+  MinioSecretKey: qSHe9dzo0GlZtikQfrzH0ARiHOXojRcRYh3Q1sSk
+  UseSSL: false
+
+#public MinIO cluster
+#aws:
+#  Endpoint: play.min.io
+#  MinioAccessKey: Q3AM3UQ867SPQQA43P2F
+#  MinioSecretKey: zuf+tfteSlswRu7BJ86wekitnifILbZam1KYY3TG

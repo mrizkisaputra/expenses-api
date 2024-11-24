@@ -1,0 +1,60 @@
+version: "3.8"
+
+services:
+
+  app:
+    container_name: expenses-api
+    image: "expenses-api:1.0.0"
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile
+    ports:
+      - "5000:5000"
+    restart: always
+    depends_on:
+      - postgresql
+      - redis
+      - minio
+    networks:
+      - web-api
+
+  postgresql:
+    image: postgres:16-alpine
+    container_name: api_postgresql
+    ports:
+      - "5433:5432"
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db_20102024
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    networks:
+      - web-api
+
+  redis:
+    image: redis:6.0.9-alpine
+    container_name: api_redis
+    ports:
+      - "6379:6379"
+    restart: always
+    networks:
+      - web-api
+
+  minio:
+    image: minio/minio:latest
+    container_name: myminio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    command: server /data --console-address ":9001"
+    networks:
+      - web-api
+
+volumes:
+  postgres-db-volume:
+
+networks:
+  web-api:
+    driver: "bridge"
