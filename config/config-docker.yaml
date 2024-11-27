@@ -1,5 +1,5 @@
 server:
-  Host: localhost
+  Host: 0.0.0.0
   Port: 5000
   ReadTimeout: 10
   WriteTimeout: 10
@@ -10,12 +10,12 @@ server:
 postgres:
   User: postgres
   Password: postgres
-  Host: localhost
-  Port: 5433
+  Host: api_postgresql
+  Port: 5432
   Dbname: db_20102024
 
 redis:
-  Addr: localhost:6379
+  Addr: api_redis:6379
   DB: 0
   MinIdleConns: 200
   PoolSize: 12000

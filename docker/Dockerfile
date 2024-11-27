@@ -1,7 +1,5 @@
 FROM golang:1.23-alpine
 
-ENV config=docker
-
 WORKDIR /usr/src/app
 
 COPY go.mod go.sum ./
