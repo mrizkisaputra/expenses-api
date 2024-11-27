@@ -61,3 +61,6 @@ Api spec is in directory [docs](./docs)
 
     # run unit-test user controller
     make user-controller-test
+
+## Docker Registry
+pull docker image [mrizkisaputra/expenses-api](https://hub.docker.com/r/mrizkisaputra/expenses-api)
