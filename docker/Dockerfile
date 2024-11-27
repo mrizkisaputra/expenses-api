@@ -1,5 +1,8 @@
 FROM golang:1.23-alpine
 
+LABEL author="muhammat rizki saputra"
+LABEL github="https://github.com/mrizkisaputra"
+
 WORKDIR /usr/src/app
 
 COPY go.mod go.sum ./
